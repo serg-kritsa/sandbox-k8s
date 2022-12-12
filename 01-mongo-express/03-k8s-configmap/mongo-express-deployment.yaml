@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express-deployment # deployment name
+  labels:
+    app: mongo-express
+spec:
+  replicas: 1 # number of pods
+  selector:
+    matchLabels:
+      app: mongo-express
+  template:
+    metadata:
+      labels:
+        app: mongo-express
+    spec:
+      containers:
+      - name: mongo-express
+        image: mongo-express
+        ports:
+        - containerPort: 8081
+        env:
+        # not secure way  
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME 
+          value: root
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD 
+          value: root
+        # - name: ME_CONFIG_MONGODB_SERVER
+        #   value: mongo-service
+        # using k8s configmap
+        - name: ME_CONFIG_MONGODB_SERVER         
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-configmap
+              key: mongo-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express-service
+spec:
+  selector:
+    app: mongo-express # should match container name
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081 # should match containerPort
+      nodePort: 31144

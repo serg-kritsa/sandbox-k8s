@@ -1,0 +1,13 @@
+kubectl apply -f mongo-secret.yaml
+kubectl apply -f mongo-deployment.yaml
+kubectl apply -f mongo-express-deployment.yaml
+sleep 30
+kubectl get all | grep mongo
+
+# kubectl get service
+# kubectl expose deployment mongo-express-deployment --type=NodePort --name=mongo-express-service
+# kubectl describe service mongo-express
+
+# kubectl edit service mongo-express-service
+
+curl localhost:31144

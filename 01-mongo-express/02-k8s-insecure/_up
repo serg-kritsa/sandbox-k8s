@@ -1,0 +1,8 @@
+kubectl apply -f mongo-deployment.yaml
+kubectl apply -f mongo-express-deployment.yaml
+
+sleep 30
+kubectl get all | grep mongo
+
+sleep 2
+curl localhost:31144
